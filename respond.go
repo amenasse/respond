@@ -110,6 +110,9 @@ func main() {
 		} else {
 			log.Fatal("Illegal status code ")
 		}
+                if code < 200 || code > 599 {
+                    log.Fatal("Status code out of range (should be between 200-599)")
+                }
 	}
 
 	path := "/"
