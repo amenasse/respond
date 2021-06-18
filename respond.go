@@ -1,10 +1,10 @@
 package main
 
 import (
+        "flag"
 	"fmt"
 	"log"
 	"net/http"
-	"os"
 	"strconv"
 )
 
@@ -95,12 +95,10 @@ func makeHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
 
 func main() {
 
-	port := "8080"
-	if envPort := os.Getenv("PORT"); envPort != "" {
-		port = envPort
-	}
 
-	args := os.Args[1:]
+        port := flag.Int("port", 8080, "port to listen on")
+	flag.Parse()
+        args := flag.Args()
 
 
 	var code int = 200
@@ -117,6 +115,7 @@ func main() {
 
 	path := "/"
 	http.HandleFunc(path, makeHandler(code))
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+        address := fmt.Sprintf(":%d", *port)
+	log.Fatal(http.ListenAndServe(address, nil))
 
 }
