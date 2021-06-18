@@ -101,20 +101,17 @@ func main() {
 
 	args := os.Args[1:]
 
-	path := "/"
-	if len(args) > 0 {
-		path = args[0]
-	}
 
 	var code int = 200
-	if len(args) > 1 {
-		if s, err := strconv.Atoi(args[1]); err == nil {
+	if len(args) > 0 {
+		if s, err := strconv.Atoi(args[0]); err == nil {
 			code = s
 		} else {
 			log.Fatal("Illegal status code ")
 		}
 	}
 
+	path := "/"
 	http.HandleFunc(path, makeHandler(code))
 	log.Fatal(http.ListenAndServe(":"+port, nil))
 
