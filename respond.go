@@ -1,7 +1,7 @@
 package main
 
 import (
-        "flag"
+	"flag"
 	"fmt"
 	"log"
 	"net/http"
@@ -79,14 +79,14 @@ var StatusCodeDescription = map[int]string{
 
 func makeHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
 
-        description := StatusCodeDescription[statusCode]
-        if description == "" {
-                description = "Unknown"
-        }
+	description := StatusCodeDescription[statusCode]
+	if description == "" {
+		description = "Unknown"
+	}
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
-                log.Printf("%s %s %s %s", r.Host, r.Method, r.Proto,r.URL)
+		log.Printf("%s %s %s %s", r.Host, r.Method, r.Proto, r.URL)
 		w.WriteHeader(statusCode)
 		fmt.Fprintln(w, description)
 	}
@@ -95,11 +95,9 @@ func makeHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
 
 func main() {
 
-
-        port := flag.Int("port", 8080, "port to listen on")
+	port := flag.Int("port", 8080, "port to listen on")
 	flag.Parse()
-        args := flag.Args()
-
+	args := flag.Args()
 
 	var code int = 200
 	if len(args) > 0 {
@@ -108,14 +106,14 @@ func main() {
 		} else {
 			log.Fatal("Illegal status code ")
 		}
-                if code < 200 || code > 599 {
-                    log.Fatal("Status code out of range (should be between 200-599)")
-                }
+		if code < 200 || code > 599 {
+			log.Fatal("Status code out of range (should be between 200-599)")
+		}
 	}
 
 	path := "/"
 	http.HandleFunc(path, makeHandler(code))
-        address := fmt.Sprintf(":%d", *port)
+	address := fmt.Sprintf(":%d", *port)
 	log.Fatal(http.ListenAndServe(address, nil))
 
 }
