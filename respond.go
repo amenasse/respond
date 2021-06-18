@@ -86,6 +86,7 @@ func makeHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
 
 	return func(w http.ResponseWriter, r *http.Request) {
 
+                log.Printf("%s %s %s %s", r.Host, r.Method, r.Proto,r.URL)
 		w.WriteHeader(statusCode)
 		fmt.Fprintln(w, description)
 	}
