@@ -1,15 +1,6 @@
-package main
-
-import (
-	"flag"
-	"fmt"
-	"log"
-	"net/http"
-	"strconv"
-)
-
+package statuscode
 // https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-var StatusCodeDescription = map[int]string{
+var Description = map[int]string{
 	100: "Continue",
 	101: "Switching Protocols",
 	102: "Processing",
@@ -77,43 +68,3 @@ var StatusCodeDescription = map[int]string{
 	511: "Network Authentication Required",
 }
 
-func makeHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
-
-	description := StatusCodeDescription[statusCode]
-	if description == "" {
-		description = "Unknown"
-	}
-
-	return func(w http.ResponseWriter, r *http.Request) {
-
-		log.Printf("%s %s %s %s", r.Host, r.Method, r.Proto, r.URL)
-		w.WriteHeader(statusCode)
-		fmt.Fprintln(w, description)
-	}
-
-}
-
-func main() {
-
-	port := flag.Int("port", 8080, "port to listen on")
-	flag.Parse()
-	args := flag.Args()
-
-	var code int = 200
-	if len(args) > 0 {
-		if s, err := strconv.Atoi(args[0]); err == nil {
-			code = s
-		} else {
-			log.Fatal("Illegal status code ")
-		}
-		if code < 200 || code > 599 {
-			log.Fatal("Status code out of range (should be between 200-599)")
-		}
-	}
-
-	path := "/"
-	http.HandleFunc(path, makeHandler(code))
-	address := fmt.Sprintf(":%d", *port)
-	log.Fatal(http.ListenAndServe(address, nil))
-
-}
