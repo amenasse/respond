@@ -1,4 +1,4 @@
-package main
+package lambda
 
 
 import (
@@ -6,14 +6,11 @@ import (
     "github.com/amenasse/respond/statuscode"
     "github.com/aws/aws-lambda-go/events"
     "log"
-    "os"
-    "strconv"
-    runtime "github.com/aws/aws-lambda-go/lambda"
 )
 
 
 
-func apiGatewayV1Handler(statusCode int) func(context.Context, events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func ApiGatewayV1Handler(statusCode int) func(context.Context, events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 	description := statuscode.Description[statusCode]
 	if description == "" {
@@ -34,7 +31,7 @@ func apiGatewayV1Handler(statusCode int) func(context.Context, events.APIGateway
 
 }
 
-func apiGatewayV2Handler(statusCode int) func(context.Context, events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+func ApiGatewayV2Handler(statusCode int) func(context.Context, events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 
 	description := statuscode.Description[statusCode]
 	if description == "" {
@@ -55,16 +52,3 @@ func apiGatewayV2Handler(statusCode int) func(context.Context, events.APIGateway
 
 }
 
-
-
-func main() {
-    status_code := 200
-    if env_var := os.Getenv("RESPONSE_STATUS"); env_var != "" {
-        var err error
-        if status_code, err = strconv.Atoi(env_var); err != nil {
-                log.Fatal("Illegal status code ")
-        }
-    }
-
-    runtime.Start(apiGatewayV2Handler(status_code))
-}
