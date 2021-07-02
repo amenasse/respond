@@ -13,7 +13,7 @@ import (
 
 
 
-func lambdaHandler(statusCode int) func(context.Context, events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
+func apiGatewayV1Handler(statusCode int) func(context.Context, events.APIGatewayProxyRequest) (events.APIGatewayProxyResponse, error) {
 
 	description := statuscode.Description[statusCode]
 	if description == "" {
@@ -25,11 +25,32 @@ func lambdaHandler(statusCode int) func(context.Context, events.APIGatewayProxyR
             host, header_present := r.Headers["Host"]
             if !header_present {
                 host = "''"
-            t
+            }
             log.Printf("%s %s %s %s", host, r.HTTPMethod, r.RequestContext.Protocol, r.Path)
 
 
             return events.APIGatewayProxyResponse{Body: description, StatusCode: statusCode}, nil
+        }
+
+}
+
+func apiGatewayV2Handler(statusCode int) func(context.Context, events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+
+	description := statuscode.Description[statusCode]
+	if description == "" {
+		description = "Unknown"
+	}
+
+        return func(ctx context.Context, r events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
+
+            host, header_present := r.Headers["Host"]
+            if !header_present {
+                host = "''"
+            }
+            log.Printf("%s %s %s %s", host, r.RequestContext.HTTP.Method, r.RequestContext.HTTP.Protocol, r.RequestContext.HTTP.Path)
+
+
+            return events.APIGatewayV2HTTPResponse{Body: description, StatusCode: statusCode}, nil
         }
 
 }
@@ -45,5 +66,5 @@ func main() {
         }
     }
 
-    runtime.Start(lambdaHandler(status_code))
+    runtime.Start(apiGatewayV2Handler(status_code))
 }
