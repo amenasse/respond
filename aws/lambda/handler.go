@@ -43,7 +43,7 @@ func apiGatewayV2Handler(statusCode int) func(context.Context, events.APIGateway
 
         return func(ctx context.Context, r events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 
-            host, header_present := r.Headers["Host"]
+            host, header_present := r.Headers["host"]
             if !header_present {
                 host = "''"
             }
