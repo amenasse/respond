@@ -1,0 +1,16 @@
+# https://docs.aws.amazon.com/lambda/latest/dg/go-image.html#go-image-clients
+FROM public.ecr.aws/lambda/go:latest as build
+# install compiler
+RUN yum install -y golang
+RUN go env -w GOPROXY=direct
+# cache dependencies
+ADD go.mod go.sum ./
+RUN go mod download
+# build
+ADD . .
+RUN cd cmd/respond-lambda && go build -o /respond
+# copy artifacts to a clean image
+FROM public.ecr.aws/lambda/go:latest
+COPY --from=build /respond ${LAMBDA_TASK_ROOT}
+ENTRYPOINT ["/lambda-entrypoint.sh"]
+CMD [ "/respond"]         
