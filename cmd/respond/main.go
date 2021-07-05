@@ -3,11 +3,11 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/amenasse/respond/statuscode"
 	"log"
 	"net/http"
-        "github.com/amenasse/respond/statuscode"
+	"os"
 	"strconv"
-        "os"
 )
 
 func HttpHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
@@ -26,8 +26,6 @@ func HttpHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
 
 }
 
-
-
 func main() {
 
 	port := flag.Int("port", 8080, "port to listen on")
@@ -36,14 +34,12 @@ func main() {
 
 	var code int = 200
 
-
-        if env_var := os.Getenv("RESPONSE_STATUS"); env_var != "" {
-            var err error
-            if code, err = strconv.Atoi(env_var); err != nil {
-                    log.Fatal("Illegal status code ")
-            }
-        }
-
+	if env_var := os.Getenv("RESPONSE_STATUS"); env_var != "" {
+		var err error
+		if code, err = strconv.Atoi(env_var); err != nil {
+			log.Fatal("Illegal status code ")
+		}
+	}
 
 	if len(args) > 0 {
 		if s, err := strconv.Atoi(args[0]); err == nil {
@@ -53,13 +49,13 @@ func main() {
 		}
 	}
 
-        if code < 200 || code > 599 {
-                log.Fatal("Status code out of range (should be between 200-599)")
-        }
+	if code < 200 || code > 599 {
+		log.Fatal("Status code out of range (should be between 200-599)")
+	}
 
 	path := "/"
 
-        http.HandleFunc(path, HttpHandler(code))
-        address := fmt.Sprintf(":%d", *port)
-        log.Fatal(http.ListenAndServe(address, nil))
+	http.HandleFunc(path, HttpHandler(code))
+	address := fmt.Sprintf(":%d", *port)
+	log.Fatal(http.ListenAndServe(address, nil))
 }

@@ -1,4 +1,5 @@
 package statuscode
+
 // https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
 var Description = map[int]string{
 	100: "Continue",
@@ -67,4 +68,3 @@ var Description = map[int]string{
 	510: "Not Extended",
 	511: "Network Authentication Required",
 }
-
