@@ -3,11 +3,10 @@ package main
 import (
 	"flag"
 	"fmt"
+	"github.com/amenasse/respond/cmd"
 	"github.com/amenasse/respond/statuscode"
 	"log"
 	"net/http"
-	"os"
-	"strconv"
 )
 
 func HttpHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
@@ -30,32 +29,10 @@ func main() {
 
 	port := flag.Int("port", 8080, "port to listen on")
 	flag.Parse()
-	args := flag.Args()
-
-	var code int = 200
-
-	if env_var := os.Getenv("RESPONSE_STATUS"); env_var != "" {
-		var err error
-		if code, err = strconv.Atoi(env_var); err != nil {
-			log.Fatal("Illegal status code ")
-		}
-	}
-
-	if len(args) > 0 {
-		if s, err := strconv.Atoi(args[0]); err == nil {
-			code = s
-		} else {
-			log.Fatal("Illegal status code ")
-		}
-	}
-
-	if code < 200 || code > 599 {
-		log.Fatal("Status code out of range (should be between 200-599)")
-	}
-
+	code := cmd.GetStatusCode()
 	path := "/"
 
 	http.HandleFunc(path, HttpHandler(code))
-	address := fmt.Sprintf(":%d", *port)
+	address := fmt.Sprintf(":%d", port)
 	log.Fatal(http.ListenAndServe(address, nil))
 }
