@@ -1,8 +1,5 @@
-# https://docs.aws.amazon.com/lambda/latest/dg/go-image.html#go-image-clients
-FROM public.ecr.aws/lambda/go:latest as build
-# install compiler
-RUN yum install -y golang
-RUN go env -w GOPROXY=direct
+FROM golang:1.16.5-alpine as build
+WORKDIR /build
 # cache dependencies
 ADD go.mod go.sum ./
 RUN go mod download
@@ -10,7 +7,12 @@ RUN go mod download
 ADD . .
 RUN cd cmd/respond-lambda && go build -o /respond
 # copy artifacts to a clean image
-FROM public.ecr.aws/lambda/go:latest
-COPY --from=build /respond ${LAMBDA_TASK_ROOT}
-ENTRYPOINT ["/lambda-entrypoint.sh"]
-CMD [ "/respond"]         
+FROM alpine:3.14.0
+COPY --from=build /respond /respond
+# (Optional) Add Lambda Runtime Interface Emulator and use a script in the ENTRYPOINT for simpler local runs
+ADD https://github.com/aws/aws-lambda-runtime-interface-emulator/releases/latest/download/aws-lambda-rie /usr/bin/aws-lambda-rie
+RUN chmod 755 /usr/bin/aws-lambda-rie
+COPY rie-entry.sh /
+RUN chmod 755 /entry.sh
+ENTRYPOINT [ "/entry.sh" ]
+CMD [ "/respond"]
