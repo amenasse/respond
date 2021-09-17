@@ -33,6 +33,6 @@ func main() {
 	path := "/"
 
 	http.HandleFunc(path, HttpHandler(code))
-	address := fmt.Sprintf(":%d", port)
+	address := fmt.Sprintf(":%d", *port)
 	log.Fatal(http.ListenAndServe(address, nil))
 }
