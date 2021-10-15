@@ -7,6 +7,7 @@ import (
 	"github.com/amenasse/respond/statuscode"
 	"log"
 	"net/http"
+        "os"
 )
 
 func HttpHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
@@ -25,12 +26,23 @@ func HttpHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
 
 }
 
+
 func main() {
 
 	port := flag.Int("port", 8080, "port to listen on")
+        logEnv := flag.Bool("log-env", false, "log environment variables on startup")
 	flag.Parse()
 	code := cmd.GetStatusCode()
 	path := "/"
+
+        if *logEnv == true {
+            log.Printf("====== Environment Variables (disable with log-env=false) ======")
+            for _, s := range os.Environ() {
+                log.Printf("%s", s)
+
+            }
+            log.Printf("===== End Environment Variables =====")
+        }
 
 	http.HandleFunc(path, HttpHandler(code))
 	address := fmt.Sprintf(":%d", *port)
