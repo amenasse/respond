@@ -1,5 +1,8 @@
-module github.com/amenasse/respond
+module respond
 
-go 1.16
+go 1.17
 
-require github.com/aws/aws-lambda-go v1.24.0
+require (
+	github.com/amenasse/respond v0.1.0
+	github.com/aws/aws-lambda-go v1.28.0
+)
