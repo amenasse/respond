@@ -9,7 +9,13 @@ A http server returning specific status codes is useful for infrastructure testi
 
 ## Installation
 
-    go get github.com/amenasse/respond
+    go install github.com/amenasse/respond/cmd/respond
+
+
+
+To build a Container image:
+
+    docker|podman build -t respond .
 
 ## Usage
 
