@@ -31,7 +31,18 @@ func main() {
 
 	port := flag.Int("port", 8080, "port to listen on")
         logEnv := flag.Bool("log-env", false, "log environment variables on startup")
+
+  flag.Usage = func() {
+    fmt.Fprintf(flag.CommandLine.Output(), "" +
+                  "Usage: " + os.Args[0] + " <STATUS-CODE>\n\n" +
+                  "  Responds to HTTP requests with STATUS-CODE.\n" +
+                  "  Without any arguments 200 OK is returned. Binds to all interfaces.\n\n")
+
+    fmt.Fprintf(flag.CommandLine.Output(), "Options:\n")
+    flag.PrintDefaults()
+  }
 	flag.Parse()
+
 	code := cmd.GetStatusCode()
 	path := "/"
 
