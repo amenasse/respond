@@ -5,6 +5,7 @@ import (
 	"log"
 	"os"
 	"strconv"
+	"github.com/amenasse/respond/statuscode"
 )
 
 func GetStatusCode() int {
@@ -31,4 +32,20 @@ func GetStatusCode() int {
 	}
 
 	return code
+}
+
+func Body(statusCode int) string {
+	description := statuscode.Description[statusCode]
+	if description == "" {
+		description = "Unknown"
+	}
+	return description
+}
+
+func Log(headers map[string]string, method string, protocol string, path string) {
+	host, header_present := headers["Host"]
+	if !header_present {
+		host = "''"
+	}
+	log.Printf("%s %s %s %s", host, method, protocol, path)
 }
