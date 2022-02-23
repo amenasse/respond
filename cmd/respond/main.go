@@ -4,24 +4,19 @@ import (
 	"flag"
 	"fmt"
 	"github.com/amenasse/respond/cmd"
-	"github.com/amenasse/respond/statuscode"
 	"log"
 	"net/http"
         "os"
 )
 
-func HttpHandler(statusCode int) func(http.ResponseWriter, *http.Request) {
+func HttpHandler(statusCode int) func(w http.ResponseWriter,r *http.Request) {
 
-	description := statuscode.Description[statusCode]
-	if description == "" {
-		description = "Unknown"
-	}
-
+        body := cmd.Body(statusCode)
 	return func(w http.ResponseWriter, r *http.Request) {
 
-		log.Printf("%s %s %s %s", r.Host, r.Method, r.Proto, r.URL)
+		cmd.Log(r.Header, r.Method, r.Proto, r.URL.String())
 		w.WriteHeader(statusCode)
-		fmt.Fprintln(w, description)
+		fmt.Fprintln(w, body)
 	}
 
 }

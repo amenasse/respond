@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"flag"
+        "net/http"
 	"log"
 	"os"
 	"strconv"
@@ -42,10 +43,7 @@ func Body(statusCode int) string {
 	return description
 }
 
-func Log(headers map[string]string, method string, protocol string, path string) {
-	host, header_present := headers["Host"]
-	if !header_present {
-		host = "''"
-	}
-	log.Printf("%s %s %s %s", host, method, protocol, path)
+func Log(headers http.Header, method string, protocol string, path string) {
+    host := headers.Get("Host")
+    log.Printf("%s %s %s %s", host, method, protocol, path)
 }
