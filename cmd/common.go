@@ -2,11 +2,11 @@ package cmd
 
 import (
 	"flag"
-        "net/http"
+	"github.com/amenasse/respond/statuscode"
 	"log"
+	"net/http"
 	"os"
 	"strconv"
-	"github.com/amenasse/respond/statuscode"
 )
 
 func GetStatusCode() int {
@@ -44,6 +44,6 @@ func Body(statusCode int) string {
 }
 
 func Log(headers http.Header, method string, protocol string, path string) {
-    host := headers.Get("Host")
-    log.Printf("%s %s %s %s", host, method, protocol, path)
+	host := headers.Get("Host")
+	log.Printf("%s %s %s %s", host, method, protocol, path)
 }
