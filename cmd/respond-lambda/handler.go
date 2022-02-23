@@ -1,4 +1,4 @@
-package lambda
+package main
 
 import (
 	"context"
@@ -22,7 +22,6 @@ func ApiGatewayV1Handler(statusCode int) func(context.Context, events.APIGateway
 	}
 
 }
-
 func ApiGatewayV2Handler(statusCode int) func(context.Context, events.APIGatewayV2HTTPRequest) (events.APIGatewayV2HTTPResponse, error) {
 
 	body := cmd.Body(statusCode)
