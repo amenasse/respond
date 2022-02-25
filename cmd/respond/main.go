@@ -54,7 +54,6 @@ var (
 func main() {
 
 	port := flag.Int("port", 8080, "port to listen on")
-	logEnv := flag.Bool("log-env", false, "log environment variables on startup")
 	versionFlag := flag.Bool("version", false, "display version information and exit")
 
 	flag.Usage = func() {
@@ -76,14 +75,6 @@ func main() {
 	code := cmd.GetStatusCode()
 	path := "/"
 
-	if *logEnv == true {
-		log.Printf("====== Environment Variables (disable with log-env=false) ======")
-		for _, s := range os.Environ() {
-			log.Printf("%s", s)
-
-		}
-		log.Printf("===== End Environment Variables =====")
-	}
 	http.HandleFunc(path, HttpHandler(code))
 	address := fmt.Sprintf(":%d", *port)
 	log.Fatal(http.ListenAndServe(address, nil))
