@@ -45,5 +45,8 @@ func Body(statusCode int) string {
 
 func Log(headers http.Header, method string, protocol string, path string) {
 	host := headers.Get("Host")
+        if host == "" {
+            host = "''"
+        }
 	log.Printf("%s %s %s %s", host, method, protocol, path)
 }
