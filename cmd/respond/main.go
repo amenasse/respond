@@ -3,18 +3,26 @@ package main
 import (
 	"flag"
 	"fmt"
-	"github.com/amenasse/respond/cmd"
 	"log"
 	"net/http"
+	"net/http/httputil"
 	"os"
 	"runtime"
 	"runtime/debug"
+
+	"github.com/amenasse/respond/cmd"
 )
 
 func HttpHandler(statusCode int) func(w http.ResponseWriter, r *http.Request) {
 
 	body := cmd.Body(statusCode)
 	return func(w http.ResponseWriter, r *http.Request) {
+		// TODO: Turn logging request headers into an option
+		requestDump, err := httputil.DumpRequest(r, true)
+		if err != nil {
+			fmt.Println(err)
+		}
+		log.Printf(string(requestDump))
 
 		cmd.Log(r.Header, r.Method, r.Proto, r.URL.String())
 		w.WriteHeader(statusCode)
