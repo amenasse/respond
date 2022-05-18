@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"html/template"
 	"log"
 	"net/http"
 	"net/http/httputil"
@@ -11,11 +12,24 @@ import (
 	"runtime/debug"
 
 	"github.com/amenasse/respond/cmd"
+	"github.com/amenasse/respond/statuscode"
 )
 
-func HttpHandler(statusCode int) func(w http.ResponseWriter, r *http.Request) {
+type ResponseContext struct {
+	requestHeader *http.Header
+	StatusCode    int
+}
 
-	body := cmd.Body(statusCode)
+func (r ResponseContext) Description() string {
+	description := statuscode.Description[r.StatusCode]
+	if description == "" {
+		description = "Unknown"
+	}
+	return description
+}
+
+func HttpHandler(statusCode int, responseText string) func(w http.ResponseWriter, r *http.Request) {
+
 	return func(w http.ResponseWriter, r *http.Request) {
 		// TODO: Turn logging request headers into an option
 		requestDump, err := httputil.DumpRequest(r, true)
@@ -26,7 +40,13 @@ func HttpHandler(statusCode int) func(w http.ResponseWriter, r *http.Request) {
 
 		cmd.Log(r.Header, r.Method, r.Proto, r.URL.String())
 		w.WriteHeader(statusCode)
-		fmt.Fprintln(w, body)
+
+		context := ResponseContext{requestHeader: &r.Header, StatusCode: statusCode}
+		t, err := template.New("response").Parse(responseText)
+		err = t.Execute(w, context)
+		if err != nil {
+			panic(err)
+		}
 	}
 
 }
@@ -74,6 +94,12 @@ func main() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+	args := flag.Args()
+
+	body := "{{.Description}}\n"
+	if len(args) > 1 {
+		body = args[1]
+	}
 
 	if *versionFlag == true {
 		fmt.Printf(buildVersion(version, commit, date, builtBy))
@@ -83,7 +109,7 @@ func main() {
 	code := cmd.GetStatusCode()
 	path := "/"
 
-	http.HandleFunc(path, HttpHandler(code))
+	http.HandleFunc(path, HttpHandler(code, body))
 	address := fmt.Sprintf(":%d", *port)
 	log.Fatal(http.ListenAndServe(address, nil))
 }

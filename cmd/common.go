@@ -2,7 +2,6 @@ package cmd
 
 import (
 	"flag"
-	"github.com/amenasse/respond/statuscode"
 	"log"
 	"net/http"
 	"os"
@@ -35,18 +34,12 @@ func GetStatusCode() int {
 	return code
 }
 
-func Body(statusCode int) string {
-	description := statuscode.Description[statusCode]
-	if description == "" {
-		description = "Unknown"
-	}
-	return description
-}
-
 func Log(headers http.Header, method string, protocol string, path string) {
+
 	host := headers.Get("Host")
-        if host == "" {
-            host = "''"
-        }
+	if host == "" {
+		host = "''"
+	}
 	log.Printf("%s %s %s %s", host, method, protocol, path)
+
 }

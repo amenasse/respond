@@ -25,12 +25,18 @@ Listen on 8080 and return a 404 status code for all requests:
 $ respond 404
 ```
 
+
 Without any arguments a 200 status code is returned
 
 ```console
 $ respond
 ```
 
+The response body can be customised
+
+```console
+$ response 200 "{{.Description}} {{.StatusCode}}\n"
+```
 
 Respond will bind to port 8080 on all interfaces. A different port can be specified:
 
