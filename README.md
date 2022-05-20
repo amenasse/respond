@@ -35,8 +35,21 @@ $ respond
 The response body can be customised
 
 ```console
-$ response 200 "{{.Description}} {{.StatusCode}}\n"
+$ respond 200 "{{.Description}} {{.StatusCode}}\n"
 ```
+
+Request header value can be returned in the response
+
+```console
+$ respond 200 '🕵: {{ .RequestHeader "User-Agent"}}'
+```
+
+Headers with mulitple values can be accessed with `.RequestHeaders`
+
+```console
+$ respond 200 'Cache-Control: {{range .RequestHeaders "Cache-Control"}}{{.}} {{else}}not set{{end}}'
+```
+
 
 Respond will bind to port 8080 on all interfaces. A different port can be specified:
 

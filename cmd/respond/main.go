@@ -28,8 +28,19 @@ func (r ResponseContext) Description() string {
 	return description
 }
 
+// Simplify referencing request headers first value  in the response template.
+func (r ResponseContext) RequestHeader(key string) string {
+	return r.requestHeader.Get(key)
+}
+
+// Simplify referencing request header values in the response template.
+func (r ResponseContext) RequestHeaders(key string) []string {
+	return r.requestHeader.Values(key)
+}
+
 func HttpHandler(statusCode int, responseText string) func(w http.ResponseWriter, r *http.Request) {
 
+	context := ResponseContext{StatusCode: statusCode}
 	return func(w http.ResponseWriter, r *http.Request) {
 		// TODO: Turn logging request headers into an option
 		requestDump, err := httputil.DumpRequest(r, true)
@@ -41,7 +52,7 @@ func HttpHandler(statusCode int, responseText string) func(w http.ResponseWriter
 		cmd.Log(r.Header, r.Method, r.Proto, r.URL.String())
 		w.WriteHeader(statusCode)
 
-		context := ResponseContext{requestHeader: &r.Header, StatusCode: statusCode}
+		context.requestHeader = &r.Header
 		t, err := template.New("response").Parse(responseText)
 		err = t.Execute(w, context)
 		if err != nil {
