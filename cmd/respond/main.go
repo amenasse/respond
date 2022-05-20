@@ -99,9 +99,10 @@ func main() {
 
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), ""+
-			"Usage: "+os.Args[0]+" <STATUS-CODE>\n\n"+
+			"Usage: "+os.Args[0]+" <STATUS-CODE> [RESPONSE-BODY]\n\n"+
 			"  Responds to HTTP requests with STATUS-CODE.\n"+
-			"  Without any arguments 200 OK is returned. Binds to all interfaces.\n\n")
+			"  Without any arguments 200 OK is returned. Binds to all interfaces.\n"+
+			"  RESPONSE-BODY should be a Go template\n\n")
 
 		fmt.Fprintf(flag.CommandLine.Output(), "Options:\n")
 		flag.PrintDefaults()
