@@ -16,8 +16,9 @@ import (
 )
 
 type ResponseContext struct {
-	requestHeader *http.Header
+	Host          string
 	StatusCode    int
+	requestHeader *http.Header
 }
 
 func (r ResponseContext) Description() string {
@@ -53,6 +54,7 @@ func HttpHandler(statusCode int, responseText string) func(w http.ResponseWriter
 		w.WriteHeader(statusCode)
 
 		context.requestHeader = &r.Header
+		context.Host = r.Host
 		t, err := template.New("response").Parse(responseText)
 		err = t.Execute(w, context)
 		if err != nil {
