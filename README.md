@@ -41,19 +41,13 @@ $ respond 200 "{{.Description}} {{.StatusCode}}\n"
 Request headers can be returned in the response
 
 ```console
-$ respond 200 '🕵: {{ .RequestHeader "User-Agent"}}'
+$ respond 200 '🕵: {{ .RequestHeader "User-Agent" }}, 👻: {{.RequestHeader "Host"}}'
 ```
 
 Headers set multiple times can be accessed with `.RequestHeaders`
 
 ```console
 $ respond 200 'Cache-Control: {{range .RequestHeaders "Cache-Control"}}{{.}} {{else}}not set{{end}}'
-```
-
-The Host request header is accessed with `.Host`
-
-```console
-$ respond 200 '{{.Host}}'
 ```
 
 Respond will bind to port 8080 on all interfaces. A different port can be specified:

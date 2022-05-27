@@ -10,6 +10,7 @@ import (
 	"os"
 	"runtime"
 	"runtime/debug"
+	"strings"
 
 	"github.com/amenasse/respond/cmd"
 	"github.com/amenasse/respond/statuscode"
@@ -31,6 +32,9 @@ func (r ResponseContext) Description() string {
 
 // Simplify referencing request headers first value  in the response template.
 func (r ResponseContext) RequestHeader(key string) string {
+	if strings.ToLower(key) == "host" {
+		return r.Host
+	}
 	return r.requestHeader.Get(key)
 }
 
@@ -54,7 +58,6 @@ func HttpHandler(statusCode int, responseText string) func(w http.ResponseWriter
 		w.WriteHeader(statusCode)
 
 		context.requestHeader = &r.Header
-		context.Host = r.Host
 		t, err := template.New("response").Parse(responseText)
 		err = t.Execute(w, context)
 		if err != nil {
