@@ -54,7 +54,7 @@ func HttpHandler(statusCode int, responseText string) func(w http.ResponseWriter
 		}
 		log.Printf(string(requestDump))
 
-		cmd.Log(r.Header, r.Method, r.Proto, r.URL.String())
+		cmd.Log(r.Host, r.Header, r.Method, r.Proto, r.URL.String())
 		w.WriteHeader(statusCode)
 
 		context.requestHeader = &r.Header

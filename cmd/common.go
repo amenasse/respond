@@ -34,9 +34,8 @@ func GetStatusCode() int {
 	return code
 }
 
-func Log(headers http.Header, method string, protocol string, path string) {
+func Log(host string, headers http.Header, method string, protocol string, path string) {
 
-	host := headers.Get("Host")
 	if host == "" {
 		host = "''"
 	}
