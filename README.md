@@ -31,11 +31,12 @@ Without any arguments a 200 status code is returned
 ```console
 $ respond
 ```
+### Response Body
 
 The response body can be customised
 
 ```console
-$ respond 200 "{{.Description}} {{.StatusCode}}\n"
+$ respond 200 '{{.Description}} {{.StatusCode}}\n'
 ```
 
 Request headers can be returned in the response
@@ -54,7 +55,20 @@ Respond will bind to port 8080 on all interfaces. A different port can be specif
 
 ```console
 $ respond -port 9000
+
 ```
+
+### Response Headers
+
+Reponse headers can be set with the `header` option:
+
+
+```console
+$ respond -header 'Content-Type: application/json' \
+          -header 'Last-Modified: Sun, 13 May 1984 08:52:00 GMT' \
+          200 '{"Model" : "T-800", "Processor": "6502"}'
+```
+
 
 ## Limitations
 

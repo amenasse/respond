@@ -43,7 +43,7 @@ func (r ResponseContext) RequestHeaders(key string) []string {
 	return r.requestHeader.Values(key)
 }
 
-func HttpHandler(statusCode int, responseText string) func(w http.ResponseWriter, r *http.Request) {
+func HttpHandler(statusCode int, responseText string, headers map[string]string) func(w http.ResponseWriter, r *http.Request) {
 
 	context := ResponseContext{StatusCode: statusCode}
 	return func(w http.ResponseWriter, r *http.Request) {
@@ -55,6 +55,9 @@ func HttpHandler(statusCode int, responseText string) func(w http.ResponseWriter
 		log.Printf(string(requestDump))
 
 		cmd.Log(r.Host, r.Header, r.Method, r.Proto, r.URL.String())
+		for h, v := range headers {
+			w.Header().Set(h, v)
+		}
 		w.WriteHeader(statusCode)
 
 		context.requestHeader = &r.Header
@@ -97,9 +100,20 @@ var (
 )
 
 func main() {
+	var headers map[string]string
+	headers = make(map[string]string)
 
 	port := flag.Int("port", 8080, "port to listen on")
 	versionFlag := flag.Bool("version", false, "display version information and exit")
+	flag.Func("header", "header to include in response", func(s string) error {
+		eq := strings.IndexByte(s, ':')
+		if eq == -1 {
+			headers[s] = ""
+		} else {
+			headers[s[:eq]] = s[eq+1:]
+		}
+		return nil
+	})
 
 	flag.Usage = func() {
 		fmt.Fprintf(flag.CommandLine.Output(), ""+
@@ -127,7 +141,7 @@ func main() {
 	code := cmd.GetStatusCode()
 	path := "/"
 
-	http.HandleFunc(path, HttpHandler(code, body))
+	http.HandleFunc(path, HttpHandler(code, body, headers))
 	address := fmt.Sprintf(":%d", *port)
 	log.Fatal(http.ListenAndServe(address, nil))
 }
