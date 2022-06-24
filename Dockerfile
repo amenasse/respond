@@ -10,4 +10,5 @@ RUN cd cmd/respond && go build -o /respond
 FROM alpine:3.16
 COPY --from=build /respond /respond
 ENTRYPOINT [ "/respond"]
+EXPOSE 8080
 CMD ["-port", "8080"]
