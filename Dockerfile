@@ -7,7 +7,7 @@ RUN go mod download
 ADD . .
 RUN cd cmd/respond && go build -o /respond
 # copy artifacts to a clean image
-FROM alpine:3.15
+FROM alpine:3.16
 COPY --from=build /respond /respond
 ENTRYPOINT [ "/respond"]
 CMD ["-port", "8080"]
