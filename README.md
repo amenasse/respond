@@ -1,6 +1,6 @@
 # Respond
 
-Returns a response with the specified status code for any request
+Return a response with the specified status code for any request
 
 ## Rationale
 
@@ -16,6 +16,7 @@ A http server returning specific status codes is useful for infrastructure testi
 To build a Container image:
 
     docker|podman build -t respond .
+
 
 ## Usage
 
