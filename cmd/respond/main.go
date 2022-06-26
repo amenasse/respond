@@ -3,12 +3,13 @@ package main
 import (
 	"flag"
 	"fmt"
+	"log"
 	"os"
 	"runtime"
 	"runtime/debug"
+	"strconv"
 	"strings"
 
-	"github.com/amenasse/respond/cmd"
 	"github.com/amenasse/respond/internal/http"
 )
 
@@ -39,6 +40,32 @@ var (
 	date    = "unknown"
 	builtBy = "unknown"
 )
+
+func getStatusCode() int {
+
+	code := 200
+	if env_var := os.Getenv("RESPONSE_STATUS"); env_var != "" {
+		var err error
+		if code, err = strconv.Atoi(env_var); err != nil {
+			log.Fatal("Illegal status code ")
+		}
+	}
+
+	args := flag.Args()
+	if len(args) > 0 {
+		if s, err := strconv.Atoi(args[0]); err == nil {
+			code = s
+		} else {
+			log.Fatal("Illegal status code ")
+		}
+	}
+
+	if code < 200 || code > 599 {
+		log.Fatal("Status code out of range (should be between 200-599)")
+	}
+
+	return code
+}
 
 func main() {
 	var headers map[string]string
@@ -79,7 +106,7 @@ func main() {
 		os.Exit(0)
 	}
 
-	code := cmd.GetStatusCode()
+	code := getStatusCode()
 
 	address := fmt.Sprintf(":%d", *port)
 	http.ListenAndServe(address, http.HttpHandler(code, body, headers))
