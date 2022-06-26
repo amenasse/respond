@@ -18,14 +18,51 @@ func TestHttpHandler(t *testing.T) {
 	}
 
 	tests := []test{
-		{statusCode: 200, bodyTemplate: "OK", responseBody: "OK"},
-		{statusCode: 200, bodyTemplate: "{{.StatusCode}} {{.Description}}", responseBody: "200 OK"},
-		{statusCode: 444, bodyTemplate: "{{.Description}}", responseBody: "Unknown"},
-		{statusCode: 444, bodyTemplate: "{{.RequestHeader \"Host\"}}", responseBody: "example.com", requestHeaders: map[string][]string{"Host": {"example.com"}}},
-		{statusCode: 200, bodyTemplate: "{{.RequestHeader \"User-Agent\"}}", responseBody: "Mosaic/0.9", requestHeaders: map[string][]string{"User-Agent": {"Mosaic/0.9"}}},
+		{
+			statusCode:   200,
+			bodyTemplate: "OK",
+			responseBody: "OK",
+		},
+		{
+			statusCode:   200,
+			bodyTemplate: "{{.StatusCode}} {{.Description}}",
+			responseBody: "200 OK",
+		},
+		{
+			statusCode:   444,
+			bodyTemplate: "{{.Description}}",
+			responseBody: "Unknown",
+		},
+		{
+			statusCode:     444,
+			bodyTemplate:   "{{.RequestHeader \"Host\"}}",
+			responseBody:   "example.com",
+			requestHeaders: map[string][]string{"Host": {"example.com"}},
+		},
+		{
+			statusCode:     200,
+			bodyTemplate:   "{{.RequestHeader \"User-Agent\"}}",
+			responseBody:   "Mosaic/0.9",
+			requestHeaders: map[string][]string{"User-Agent": {"Mosaic/0.9"}},
+		},
 
-		{statusCode: 200, bodyTemplate: "|{{range .RequestHeaders \"Cache-Control\"}}{{.}}|{{end}}", responseBody: "|max-age=0|private|", requestHeaders: map[string][]string{"Cache-Control": {"max-age=0", "private"}}},
-		{statusCode: 200, bodyTemplate: "OK", responseBody: "OK", responseHeaders: map[string]string{"Content-Type": "application/json", "Last-Modified": "Sun, 13 May 1984 08:52:00 GMT"}},
+		{
+			statusCode:   200,
+			bodyTemplate: "|{{range .RequestHeaders \"Cache-Control\"}}{{.}}|{{end}}",
+			responseBody: "|max-age=0|private|",
+			requestHeaders: map[string][]string{
+				"Cache-Control": {"max-age=0", "private"},
+			},
+		},
+		{
+			statusCode:   200,
+			bodyTemplate: "OK",
+			responseBody: "OK",
+			responseHeaders: map[string]string{
+				"Content-Type":  "application/json",
+				"Last-Modified": "Sun, 13 May 1984 08:52:00 GMT",
+			},
+		},
 	}
 
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
@@ -36,7 +73,11 @@ func TestHttpHandler(t *testing.T) {
 				req.Header.Add(k, h)
 			}
 		}
-		handler := HttpHandler(tc.statusCode, tc.bodyTemplate, tc.responseHeaders)
+		handler := HttpHandler(
+			tc.statusCode,
+			tc.bodyTemplate,
+			tc.responseHeaders,
+		)
 		handler(recorder, req)
 		res := recorder.Result()
 		data, _ := ioutil.ReadAll(res.Body)
