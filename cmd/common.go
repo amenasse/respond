@@ -3,7 +3,6 @@ package cmd
 import (
 	"flag"
 	"log"
-	"net/http"
 	"os"
 	"strconv"
 )
@@ -32,13 +31,4 @@ func GetStatusCode() int {
 	}
 
 	return code
-}
-
-func Log(host string, headers http.Header, method string, protocol string, path string) {
-
-	if host == "" {
-		host = "''"
-	}
-	log.Printf("%s %s %s %s", host, method, protocol, path)
-
 }

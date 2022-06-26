@@ -7,8 +7,6 @@ import (
 	"net/http"
 	"net/http/httputil"
 	"strings"
-
-	"github.com/amenasse/respond/cmd"
 )
 
 type ResponseContext struct {
@@ -38,6 +36,13 @@ func (r ResponseContext) RequestHeaders(key string) []string {
 	return r.requestHeader.Values(key)
 }
 
+func logRequest(host string, headers http.Header, method string, protocol string, path string) {
+	if host == "" {
+		host = "''"
+	}
+	log.Printf("%s %s %s %s", host, method, protocol, path)
+}
+
 func HttpHandler(statusCode int, responseText string, headers map[string]string) func(w http.ResponseWriter, r *http.Request) {
 
 	context := ResponseContext{StatusCode: statusCode}
@@ -49,7 +54,7 @@ func HttpHandler(statusCode int, responseText string, headers map[string]string)
 		}
 		log.Printf(string(requestDump))
 
-		cmd.Log(r.Host, r.Header, r.Method, r.Proto, r.URL.String())
+		logRequest(r.Host, r.Header, r.Method, r.Proto, r.URL.String())
 		for h, v := range headers {
 			w.Header().Set(h, v)
 		}
