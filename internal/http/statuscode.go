@@ -1,7 +1,7 @@
-package statuscode
+package http
 
 // https://www.iana.org/assignments/http-status-codes/http-status-codes.xhtml
-var Description = map[int]string{
+var StatusCodeDescription = map[int]string{
 	100: "Continue",
 	101: "Switching Protocols",
 	102: "Processing",
