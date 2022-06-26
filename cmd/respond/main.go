@@ -3,73 +3,14 @@ package main
 import (
 	"flag"
 	"fmt"
-	"html/template"
-	"log"
-	"net/http"
-	"net/http/httputil"
 	"os"
 	"runtime"
 	"runtime/debug"
 	"strings"
 
 	"github.com/amenasse/respond/cmd"
-	"github.com/amenasse/respond/statuscode"
+	"github.com/amenasse/respond/internal/http"
 )
-
-type ResponseContext struct {
-	Host          string
-	StatusCode    int
-	requestHeader *http.Header
-}
-
-func (r ResponseContext) Description() string {
-	description := statuscode.Description[r.StatusCode]
-	if description == "" {
-		description = "Unknown"
-	}
-	return description
-}
-
-// Simplify referencing request headers first value  in the response template.
-func (r ResponseContext) RequestHeader(key string) string {
-	if strings.ToLower(key) == "host" {
-		return r.Host
-	}
-	return r.requestHeader.Get(key)
-}
-
-// Simplify referencing request header values in the response template.
-func (r ResponseContext) RequestHeaders(key string) []string {
-	return r.requestHeader.Values(key)
-}
-
-func HttpHandler(statusCode int, responseText string, headers map[string]string) func(w http.ResponseWriter, r *http.Request) {
-
-	context := ResponseContext{StatusCode: statusCode}
-	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Turn logging request headers into an option
-		requestDump, err := httputil.DumpRequest(r, true)
-		if err != nil {
-			fmt.Println(err)
-		}
-		log.Printf(string(requestDump))
-
-		cmd.Log(r.Host, r.Header, r.Method, r.Proto, r.URL.String())
-		for h, v := range headers {
-			w.Header().Set(h, v)
-		}
-		w.WriteHeader(statusCode)
-
-		context.requestHeader = &r.Header
-		context.Host = r.Host
-		t, err := template.New("response").Parse(responseText)
-		err = t.Execute(w, context)
-		if err != nil {
-			panic(err)
-		}
-	}
-
-}
 
 // buildVersion taken from goreleaser https://github.com/goreleaser/goreleaser
 func buildVersion(version, commit, date, builtBy string) string {
@@ -139,9 +80,7 @@ func main() {
 	}
 
 	code := cmd.GetStatusCode()
-	path := "/"
 
-	http.HandleFunc(path, HttpHandler(code, body, headers))
 	address := fmt.Sprintf(":%d", *port)
-	log.Fatal(http.ListenAndServe(address, nil))
+	http.ListenAndServe(address, http.HttpHandler(code, body, headers))
 }
