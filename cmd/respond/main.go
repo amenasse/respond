@@ -109,5 +109,6 @@ func main() {
 	code := getStatusCode()
 
 	address := fmt.Sprintf(":%d", *port)
+	log.Printf("Starting Respond %v listening on %v", version, address)
 	http.ListenAndServe(address, http.HttpHandler(code, body, headers))
 }
