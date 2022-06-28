@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestHttpHandler(t *testing.T) {
+func TestHandler(t *testing.T) {
 
 	type test struct {
 		statusCode      int
@@ -73,7 +73,7 @@ func TestHttpHandler(t *testing.T) {
 				req.Header.Add(k, h)
 			}
 		}
-		handler := HttpHandler(
+		handler := Handler(
 			tc.statusCode,
 			tc.bodyTemplate,
 			tc.responseHeaders,

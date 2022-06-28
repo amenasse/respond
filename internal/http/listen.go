@@ -5,8 +5,8 @@ import (
 	"net/http"
 )
 
-func ListenAndServe(address string, handler func(http.ResponseWriter, *http.Request)) {
+func Serve(address string, code int, body string, headers map[string]string) {
 	path := "/"
-	http.HandleFunc(path, handler)
+	http.HandleFunc(path, Handler(code, body, headers))
 	log.Fatal(http.ListenAndServe(address, nil))
 }

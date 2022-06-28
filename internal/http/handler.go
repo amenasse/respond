@@ -43,7 +43,7 @@ func logRequest(host string, headers http.Header, method string, protocol string
 	log.Printf("%s %s %s %s", host, method, protocol, path)
 }
 
-func HttpHandler(statusCode int, responseText string, headers map[string]string) func(w http.ResponseWriter, r *http.Request) {
+func Handler(statusCode int, responseText string, headers map[string]string) func(w http.ResponseWriter, r *http.Request) {
 
 	context := ResponseContext{StatusCode: statusCode}
 	return func(w http.ResponseWriter, r *http.Request) {
