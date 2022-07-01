@@ -13,9 +13,9 @@ A http server returning specific status codes is useful for infrastructure testi
 
 
 
-To build a Container image:
+To run a Container image:
 
-    docker|podman build -t respond .
+    docker|podman run sysant/respond
 
 
 ## Usage

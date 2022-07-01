@@ -21,7 +21,7 @@ dockers:
       - "sysant/respond:latest"
       - "sysant/respond:{{ .Tag }}"
 
-    dockerfile: DockerfileRelease
+    dockerfile: Dockerfile
     use: buildx
 
 archives:
