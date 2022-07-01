@@ -16,6 +16,14 @@ builds:
       - linux_arm64
       - linux_arm
 
+dockers:
+  - image_templates:
+      - "sysant/respond:latest"
+      - "sysant/respond:{{ .Tag }}"
+
+    dockerfile: DockerfileRelease
+    use: buildx
+
 archives:
   - replacements:
       darwin: Darwin
