@@ -55,13 +55,13 @@ docker_manifests:
     image_templates:
       - 'sysant/respond:{{ .Tag }}-amd64'
       - 'sysant/respond:{{ .Tag }}-arm64'
-      - 'sysant/respond:{{ .Tag }}-amd'
+      - 'sysant/respond:{{ .Tag }}-arm'
 
   - name_template: sysant/respond:latest
     image_templates:
       - 'sysant/respond:{{ .Tag }}-amd64'
       - 'sysant/respond:{{ .Tag }}-arm64'
-      - 'sysant/respond:{{ .Tag }}-amd'
+      - 'sysant/respond:{{ .Tag }}-arm'
 
 
 archives:

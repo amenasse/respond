@@ -9,6 +9,8 @@ on:
   pull_request:
 
 jobs:
+  env:
+    DOCKER_CLI_EXPERIMENTAL: "enabled"
 
   build:
     runs-on: ubuntu-latest
