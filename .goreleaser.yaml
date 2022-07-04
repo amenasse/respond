@@ -17,12 +17,36 @@ builds:
       - linux_arm
 
 dockers:
-  - image_templates:
+  -
+    goos: linux
+    goarch: amd64
+    image_templates:
       - "sysant/respond:latest"
       - "sysant/respond:{{ .Tag }}"
 
     dockerfile: Dockerfile
     use: buildx
+  -
+    goos: linux
+    goarch: arm64
+    image_templates:
+      - "sysant/respond:latest"
+      - "sysant/respond:{{ .Tag }}"
+
+    dockerfile: Dockerfile
+    use: buildx
+
+  -
+    goos: linux
+    goarch: arm
+    image_templates:
+      - "sysant/respond:latest"
+      - "sysant/respond:{{ .Tag }}"
+
+    dockerfile: Dockerfile
+    use: buildx
+
+
 
 archives:
   - replacements:
