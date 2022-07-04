@@ -42,24 +42,26 @@ dockers:
     goos: linux
     goarch: arm
     image_templates:
-      - "sysant/respond:{{ .Tag }}-arm"
+      - 'sysant/respond:{{ .Tag }}-arm'
     build_flag_templates:
       - "--platform=linux/arm"
 
     dockerfile: Dockerfile
     use: buildx
 
+
 docker_manifests:
-  - name_template: sysant/respond:{{ .Version }}
+  - name_template: 'sysant/respond:{{ .Tag }}'
     image_templates:
-      - sysant/respond:{{ .Version }}-amd64
-      - sysant/respond:{{ .Version }}-arm64
-      - sysant/respond:{{ .Version }}-amd
+      - 'sysant/respond:{{ .Tag }}-amd64'
+      - 'sysant/respond:{{ .Tag }}-arm64'
+      - 'sysant/respond:{{ .Tag }}-amd'
+
   - name_template: sysant/respond:latest
     image_templates:
-      - sysant/respond:{{ .Tag }}-amd64
-      - sysant/respond:{{ .Tag }}-arm64
-      - sysant/respond:{{ .Tag }}-amd
+      - 'sysant/respond:{{ .Tag }}-amd64'
+      - 'sysant/respond:{{ .Tag }}-arm64'
+      - 'sysant/respond:{{ .Tag }}-amd'
 
 
 archives:
