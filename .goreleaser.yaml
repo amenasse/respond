@@ -17,6 +17,8 @@ builds:
 
 dockers:
 
+
+
   -
     goos: linux
     goarch: amd64
@@ -38,30 +40,17 @@ dockers:
     dockerfile: Dockerfile
     use: buildx
 
-  -
-    goos: linux
-    goarch: arm
-    image_templates:
-      - 'sysant/respond:{{ .Tag }}-arm'
-    build_flag_templates:
-      - "--platform=linux/arm"
-
-    dockerfile: Dockerfile
-    use: buildx
-
 
 docker_manifests:
   - name_template: 'sysant/respond:{{ .Tag }}'
     image_templates:
       - 'sysant/respond:{{ .Tag }}-amd64'
       - 'sysant/respond:{{ .Tag }}-arm64'
-      - 'sysant/respond:{{ .Tag }}-arm'
 
   - name_template: sysant/respond:latest
     image_templates:
       - 'sysant/respond:{{ .Tag }}-amd64'
       - 'sysant/respond:{{ .Tag }}-arm64'
-      - 'sysant/respond:{{ .Tag }}-arm'
 
 
 archives:
