@@ -9,10 +9,12 @@ on:
   pull_request:
 
 jobs:
-  env:
-    DOCKER_CLI_EXPERIMENTAL: "enabled"
-
   build:
+
+    env:
+      # Enable experimental to allow pushing Manifests
+      DOCKER_CLI_EXPERIMENTAL: "enabled"
+
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
