@@ -70,6 +70,15 @@ respond -header 'Content-Type: application/json' \
         200 '{"Model" : "T-800", "Processor": "6502"}'
 ```
 
+### Logging
+
+Logging can be customised with the `logformat` option:
+
+```bash
+respond -logformat \
+        '{"Method": "{{.Method}}","Path": "{{.Path}}", "Code": "{{.StatusCode}}"}'
+```
+
 
 ## Limitations
 
