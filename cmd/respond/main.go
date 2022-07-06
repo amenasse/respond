@@ -73,6 +73,7 @@ func main() {
 
 	port := flag.Int("port", 8080, "port to listen on")
 	versionFlag := flag.Bool("version", false, "display version information and exit")
+	logFormat := flag.String("logformat", "", "format string for logging")
 	flag.Func("header", "header to include in response", func(s string) error {
 		eq := strings.IndexByte(s, ':')
 		if eq == -1 {
@@ -106,8 +107,10 @@ func main() {
 		os.Exit(0)
 	}
 
+	if *logFormat != "" {
+		http.LogFormat = *logFormat
+	}
 	code := getStatusCode()
-
 	address := fmt.Sprintf(":%d", *port)
 	log.Printf("Starting Respond %v listening on %v", version, address)
 	http.Serve(address, code, body, headers)

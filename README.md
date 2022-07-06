@@ -37,7 +37,7 @@ respond
 The response body can be customised
 
 ```bash
-respond 200 '{{.Description}} {{.StatusCode}}\n'
+respond 200 '{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}}\n'
 ```
 
 Request headers can be returned in the response
@@ -68,6 +68,15 @@ Reponse headers can be set with the `header` option:
 respond -header 'Content-Type: application/json' \
         -header 'Last-Modified: Sun, 13 May 1984 08:52:00 GMT' \
         200 '{"Model" : "T-800", "Processor": "6502"}'
+```
+
+### Logging
+
+Logging can be customised with the `logformat` option:
+
+```bash
+respond -logformat \
+        '{"Method": "{{.Method}}","Path": "{{.Path}}", "Code": "{{.StatusCode}}"}'
 ```
 
 

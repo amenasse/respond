@@ -1,6 +1,7 @@
 package http
 
 import (
+	"bytes"
 	"fmt"
 	"html/template"
 	"log"
@@ -13,6 +14,9 @@ type ResponseContext struct {
 	Host          string
 	StatusCode    int
 	requestHeader *http.Header
+	Method        string
+	Proto         string
+	Path          string
 }
 
 func (r ResponseContext) Description() string {
@@ -36,11 +40,25 @@ func (r ResponseContext) RequestHeaders(key string) []string {
 	return r.requestHeader.Values(key)
 }
 
-func logRequest(host string, headers http.Header, method string, protocol string, path string) {
-	if host == "" {
-		host = "''"
+type LogContext struct {
+	ResponseContext
+}
+
+var LogFormat = "{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}}"
+
+func renderRequestLog(context LogContext) string {
+
+	if context.Host == "" {
+		context.Host = "''"
 	}
-	log.Printf("%s %s %s %s", host, method, protocol, path)
+
+	t, err := template.New("log").Parse(LogFormat)
+	var buf bytes.Buffer
+	err = t.Execute(&buf, context)
+	if err != nil {
+		panic(err)
+	}
+	return buf.String()
 }
 
 func Handler(statusCode int, responseText string, headers map[string]string) func(w http.ResponseWriter, r *http.Request) {
@@ -52,9 +70,7 @@ func Handler(statusCode int, responseText string, headers map[string]string) fun
 		if err != nil {
 			fmt.Println(err)
 		}
-		log.Printf(string(requestDump))
 
-		logRequest(r.Host, r.Header, r.Method, r.Proto, r.URL.String())
 		for h, v := range headers {
 			w.Header().Set(h, v)
 		}
@@ -62,6 +78,14 @@ func Handler(statusCode int, responseText string, headers map[string]string) fun
 
 		context.requestHeader = &r.Header
 		context.Host = r.Host
+		context.Method = r.Method
+		context.Proto = r.Proto
+		context.Path = r.URL.String()
+
+		logContext := LogContext{ResponseContext: context}
+		log.Printf(string(requestDump))
+		log.Printf(renderRequestLog(logContext))
+
 		t, err := template.New("response").Parse(responseText)
 		err = t.Execute(w, context)
 		if err != nil {
