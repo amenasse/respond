@@ -37,7 +37,7 @@ respond
 The response body can be customised
 
 ```bash
-respond 200 '{{.Description}} {{.StatusCode}}\n'
+respond 200 '{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}}\n'
 ```
 
 Request headers can be returned in the response

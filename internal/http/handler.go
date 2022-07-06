@@ -13,6 +13,9 @@ type ResponseContext struct {
 	Host          string
 	StatusCode    int
 	requestHeader *http.Header
+	Method        string
+	Proto         string
+	Path          string
 }
 
 func (r ResponseContext) Description() string {
@@ -62,6 +65,10 @@ func Handler(statusCode int, responseText string, headers map[string]string) fun
 
 		context.requestHeader = &r.Header
 		context.Host = r.Host
+		context.Method = r.Method
+		context.Proto = r.Proto
+		context.Path = r.URL.String()
+
 		t, err := template.New("response").Parse(responseText)
 		err = t.Execute(w, context)
 		if err != nil {
