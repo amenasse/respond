@@ -45,6 +45,8 @@ func (r ResponseContext) RequestHeadersAll() map[string]string {
 	for k, v := range *r.requestHeader {
 		h[k] = strings.Join(v, ",")
 	}
+	// The request Header object has Host removed
+	h["Host"] = r.Host
 	return h
 }
 

@@ -12,6 +12,7 @@ func TestHandler(t *testing.T) {
 	type test struct {
 		statusCode      int
 		bodyTemplate    string
+		host            string
 		responseBody    string
 		responseHeaders map[string]string
 		requestHeaders  map[string][]string
@@ -37,7 +38,8 @@ func TestHandler(t *testing.T) {
 			statusCode:     444,
 			bodyTemplate:   "{{.RequestHeader \"Host\"}}",
 			responseBody:   "example.com",
-			requestHeaders: map[string][]string{"Host": {"example.com"}},
+			requestHeaders: map[string][]string{},
+			host:           "example.com",
 		},
 		{
 			statusCode:     200,
@@ -58,10 +60,10 @@ func TestHandler(t *testing.T) {
 			statusCode:   200,
 			bodyTemplate: "{{range $name,$value := .RequestHeadersAll }}{{$name}}: {{$value}}|{{end}}",
 			responseBody: "Cache-Control: max-age=0,private|Host: example.com|User-Agent: Mosaic/0.9|",
+			host:         "example.com",
 			requestHeaders: map[string][]string{
 				"Cache-Control": {"max-age=0", "private"},
 				"User-Agent":    {"Mosaic/0.9"},
-				"Host":          {"example.com"},
 			},
 		},
 		{
