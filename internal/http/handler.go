@@ -40,6 +40,16 @@ func (r ResponseContext) RequestHeaders(key string) []string {
 	return r.requestHeader.Values(key)
 }
 
+// Return all headers and values. If multiple values are associated with a key return as a comma seperated string
+func (r ResponseContext) RequestHeadersAll() map[string]string {
+
+	h := make(map[string]string)
+	for k, v := range *r.requestHeader {
+		h[k] = strings.Join(v, ",")
+	}
+	return h
+}
+
 type LogContext struct {
 	ResponseContext
 }
