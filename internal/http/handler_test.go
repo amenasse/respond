@@ -65,8 +65,9 @@ func TestHandler(t *testing.T) {
 		},
 	}
 
-	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	for _, tc := range tests {
+
+		req := httptest.NewRequest(http.MethodGet, "/", nil)
 		recorder := httptest.NewRecorder()
 		for k, v := range tc.requestHeaders {
 			for _, h := range v {
