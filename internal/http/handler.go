@@ -2,11 +2,9 @@ package http
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	"net/http/httputil"
 	"strings"
 )
 
@@ -54,7 +52,7 @@ type LogContext struct {
 	ResponseContext
 }
 
-var LogFormat = "{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}}"
+var LogFormat = "{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}} {{ range $key,$value := .RequestHeadersAll}}{{$key}}: {{$value}} {{end}}"
 
 func renderRequestLog(context LogContext) string {
 
@@ -75,11 +73,6 @@ func Handler(statusCode int, responseText string, headers map[string]string) fun
 
 	context := ResponseContext{StatusCode: statusCode}
 	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Turn logging request headers into an option
-		requestDump, err := httputil.DumpRequest(r, true)
-		if err != nil {
-			fmt.Println(err)
-		}
 
 		for h, v := range headers {
 			w.Header().Set(h, v)
@@ -93,7 +86,6 @@ func Handler(statusCode int, responseText string, headers map[string]string) fun
 		context.Path = r.URL.String()
 
 		logContext := LogContext{ResponseContext: context}
-		log.Printf(string(requestDump))
 		log.Printf(renderRequestLog(logContext))
 
 		t, err := template.New("response").Parse(responseText)
