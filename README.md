@@ -47,11 +47,11 @@ respond 200 '🕵: {{ .RequestHeader "User-Agent" }}, 👻: {{.RequestHeader "Ho
 ```
 
 
-All header names and values can be returned with `.RequestHeadersAll`
+All header names and values can be returned with `.RequestHeaders`
 
 ```bash
 
-respond 200 '{{range .RequestHeadersAll }}{{.Name}}: {{.Value}}|{{end}}'
+respond 200 '{{range .RequestHeaders }}{{.Name}}: {{.Value}}|{{end}}'
 ```
 
 Respond will bind to port 8080 on all interfaces. A different port can be specified:

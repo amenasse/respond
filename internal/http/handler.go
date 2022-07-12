@@ -35,9 +35,9 @@ func (r ResponseContext) RequestHeader(key string) string {
 	return strings.Join(r.requestHeader.Values(key), ",")
 }
 
-// RequestHeadersAll returns an array of type headerField so
+// RequestHeaders returns an array of type headerField so
 //  header pairs can be simply ranged over in templates:
-// {{range .RequestHeadersAll}}{{.Name}}: {{.Value}}{{end}}
+// {{range .RequestHeaders}}{{.Name}}: {{.Value}}{{end}}
 
 type headerField struct {
 	Name  string
@@ -46,7 +46,7 @@ type headerField struct {
 
 // Return all header keys and values sorted by key. Concatenate multiple values
 // associated with a key into a comma seperated string
-func (r ResponseContext) RequestHeadersAll() []headerField {
+func (r ResponseContext) RequestHeaders() []headerField {
 
 	headers := r.requestHeader.Clone()
 	headers.Add("Host", r.Host)
@@ -69,7 +69,7 @@ type LogContext struct {
 	ResponseContext
 }
 
-var LogFormat = "{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}} {{ range .RequestHeadersAll}}{{.Name}}: {{.Value}} {{end}}"
+var LogFormat = "{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}} {{ range .RequestHeaders}}{{.Name}}: {{.Value}} {{end}}"
 
 func renderRequestLog(context LogContext) string {
 
