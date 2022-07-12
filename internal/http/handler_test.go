@@ -58,12 +58,12 @@ func TestHandler(t *testing.T) {
 		},
 		{
 			statusCode:   200,
-			bodyTemplate: "{{range $name,$value := .RequestHeadersAll }}{{$name}}: {{$value}}|{{end}}",
+			bodyTemplate: "{{range .RequestHeadersAll }}{{.Name}}: {{.Value}}|{{end}}",
 			responseBody: "Cache-Control: max-age=0,private|Host: example.com|User-Agent: Mosaic/0.9|",
 			host:         "example.com",
 			requestHeaders: map[string][]string{
-				"Cache-Control": {"max-age=0", "private"},
 				"User-Agent":    {"Mosaic/0.9"},
+				"Cache-Control": {"max-age=0", "private"},
 			},
 		},
 		{

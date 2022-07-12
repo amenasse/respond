@@ -56,7 +56,7 @@ All header names and values can be returned with `.RequestHeadersAll`
 
 ```bash
 
-respond 200 '{{range $name,$value := .RequestHeadersAll }}{{$name}}: {{$value}}|{{end}}'
+respond 200 '{{range .RequestHeadersAll }}{{.Name}}: {{.Value}}|{{end}}'
 ```
 
 Respond will bind to port 8080 on all interfaces. A different port can be specified:

@@ -5,6 +5,7 @@ import (
 	"html/template"
 	"log"
 	"net/http"
+	"sort"
 	"strings"
 )
 
@@ -38,23 +39,41 @@ func (r ResponseContext) RequestHeaders(key string) []string {
 	return r.requestHeader.Values(key)
 }
 
-// Return all headers and values. If multiple values are associated with a key return as a comma seperated string
-func (r ResponseContext) RequestHeadersAll() map[string]string {
+// RequestHeadersAll returns an array of type headerField so
+//  header pairs can be simply ranged over in templates:
+// {{range .RequestHeadersAll}}{{.Name}}: {{.Value}}{{end}}
 
-	h := make(map[string]string)
-	for k, v := range *r.requestHeader {
-		h[k] = strings.Join(v, ",")
+type headerField struct {
+	Name  string
+	Value string
+}
+
+// Return all header keys and values sorted by key. Concatenate multiple values
+// associated with a key into a comma seperated string
+func (r ResponseContext) RequestHeadersAll() []headerField {
+
+	headers := r.requestHeader.Clone()
+	headers.Add("Host", r.Host)
+
+	keys := make([]string, 0, len(headers))
+	for k := range headers {
+		keys = append(keys, k)
 	}
-	// The request Header object has Host removed
-	h["Host"] = r.Host
-	return h
+
+	sort.Strings(keys)
+
+	headerFields := make([]headerField, 0)
+	for _, k := range keys {
+		headerFields = append(headerFields, headerField{k, strings.Join(headers[k], ",")})
+	}
+	return headerFields
 }
 
 type LogContext struct {
 	ResponseContext
 }
 
-var LogFormat = "{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}} {{ range $key,$value := .RequestHeadersAll}}{{$key}}: {{$value}} {{end}}"
+var LogFormat = "{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}} {{ range .RequestHeadersAll}}{{.Name}}: {{.Value}} {{end}}"
 
 func renderRequestLog(context LogContext) string {
 
