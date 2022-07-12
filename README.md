@@ -46,11 +46,6 @@ Request headers can be returned in the response
 respond 200 '🕵: {{ .RequestHeader "User-Agent" }}, 👻: {{.RequestHeader "Host"}}'
 ```
 
-Headers set multiple times can be accessed with `.RequestHeaders`
-
-```bash
-respond 200 'Cache-Control: {{range .RequestHeaders "Cache-Control"}}{{.}} {{else}}not set{{end}}'
-```
 
 All header names and values can be returned with `.RequestHeadersAll`
 

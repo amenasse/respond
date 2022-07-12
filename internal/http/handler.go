@@ -26,17 +26,13 @@ func (r ResponseContext) Description() string {
 	return description
 }
 
-// Simplify referencing request headers first value  in the response template.
+// Return  values for the given header key. Concatenate multiple values
+// associated with a key into a comma seperated string
 func (r ResponseContext) RequestHeader(key string) string {
 	if strings.ToLower(key) == "host" {
 		return r.Host
 	}
-	return r.requestHeader.Get(key)
-}
-
-// Simplify referencing request header values in the response template.
-func (r ResponseContext) RequestHeaders(key string) []string {
-	return r.requestHeader.Values(key)
+	return strings.Join(r.requestHeader.Values(key), ",")
 }
 
 // RequestHeadersAll returns an array of type headerField so

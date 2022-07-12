@@ -50,8 +50,8 @@ func TestHandler(t *testing.T) {
 
 		{
 			statusCode:   200,
-			bodyTemplate: "|{{range .RequestHeaders \"Cache-Control\"}}{{.}}|{{end}}",
-			responseBody: "|max-age=0|private|",
+			bodyTemplate: "{{.RequestHeader \"Cache-Control\"}}",
+			responseBody: "max-age=0,private",
 			requestHeaders: map[string][]string{
 				"Cache-Control": {"max-age=0", "private"},
 			},
