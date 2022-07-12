@@ -52,6 +52,13 @@ Headers set multiple times can be accessed with `.RequestHeaders`
 respond 200 'Cache-Control: {{range .RequestHeaders "Cache-Control"}}{{.}} {{else}}not set{{end}}'
 ```
 
+All header names and values can be returned with `.RequestHeadersAll`
+
+```bash
+
+respond 200 '{{range .RequestHeadersAll }}{{.Name}}: {{.Value}}|{{end}}'
+```
+
 Respond will bind to port 8080 on all interfaces. A different port can be specified:
 
 ```bash

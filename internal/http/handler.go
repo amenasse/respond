@@ -2,11 +2,10 @@ package http
 
 import (
 	"bytes"
-	"fmt"
 	"html/template"
 	"log"
 	"net/http"
-	"net/http/httputil"
+	"sort"
 	"strings"
 )
 
@@ -40,11 +39,41 @@ func (r ResponseContext) RequestHeaders(key string) []string {
 	return r.requestHeader.Values(key)
 }
 
+// RequestHeadersAll returns an array of type headerField so
+//  header pairs can be simply ranged over in templates:
+// {{range .RequestHeadersAll}}{{.Name}}: {{.Value}}{{end}}
+
+type headerField struct {
+	Name  string
+	Value string
+}
+
+// Return all header keys and values sorted by key. Concatenate multiple values
+// associated with a key into a comma seperated string
+func (r ResponseContext) RequestHeadersAll() []headerField {
+
+	headers := r.requestHeader.Clone()
+	headers.Add("Host", r.Host)
+
+	keys := make([]string, 0, len(headers))
+	for k := range headers {
+		keys = append(keys, k)
+	}
+
+	sort.Strings(keys)
+
+	headerFields := make([]headerField, 0)
+	for _, k := range keys {
+		headerFields = append(headerFields, headerField{k, strings.Join(headers[k], ",")})
+	}
+	return headerFields
+}
+
 type LogContext struct {
 	ResponseContext
 }
 
-var LogFormat = "{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}}"
+var LogFormat = "{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}} {{ range .RequestHeadersAll}}{{.Name}}: {{.Value}} {{end}}"
 
 func renderRequestLog(context LogContext) string {
 
@@ -65,11 +94,6 @@ func Handler(statusCode int, responseText string, headers map[string]string) fun
 
 	context := ResponseContext{StatusCode: statusCode}
 	return func(w http.ResponseWriter, r *http.Request) {
-		// TODO: Turn logging request headers into an option
-		requestDump, err := httputil.DumpRequest(r, true)
-		if err != nil {
-			fmt.Println(err)
-		}
 
 		for h, v := range headers {
 			w.Header().Set(h, v)
@@ -83,7 +107,6 @@ func Handler(statusCode int, responseText string, headers map[string]string) fun
 		context.Path = r.URL.String()
 
 		logContext := LogContext{ResponseContext: context}
-		log.Printf(string(requestDump))
 		log.Printf(renderRequestLog(logContext))
 
 		t, err := template.New("response").Parse(responseText)
