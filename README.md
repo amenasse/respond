@@ -32,6 +32,13 @@ Without any arguments a 200 status code is returned
 ```bash
 respond
 ```
+
+Respond will bind to port 8080 on all interfaces. A different port can be specified:
+
+```bash
+respond -port 8080
+```
+
 ### Response Body
 
 The response body can be customised
@@ -52,13 +59,6 @@ All header names and values can be returned with `.RequestHeaders`
 ```bash
 
 respond 200 '{{range .RequestHeaders }}{{.Name}}: {{.Value}}|{{end}}'
-```
-
-Respond will bind to port 8080 on all interfaces. A different port can be specified:
-
-```bash
-respond -port 9000
-
 ```
 
 ### Response Headers
