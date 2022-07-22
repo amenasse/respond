@@ -44,13 +44,6 @@ var (
 func getStatusCode() int {
 
 	code := 200
-	if env_var := os.Getenv("RESPONSE_STATUS"); env_var != "" {
-		var err error
-		if code, err = strconv.Atoi(env_var); err != nil {
-			log.Fatal("Illegal status code ")
-		}
-	}
-
 	args := flag.Args()
 	if len(args) > 0 {
 		if s, err := strconv.Atoi(args[0]); err == nil {
