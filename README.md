@@ -80,13 +80,3 @@ Logging can be customised with the `logformat` option:
 respond -logformat \
         '{"Method": "{{.Method}}","Path": "{{.Path}}", "Code": "{{.StatusCode}}"}'
 ```
-
-
-## Limitations
-
-Support for the following may be added in the future:
-
- - TLS
- - HTTP/2
- - h2c
- - Websockets
