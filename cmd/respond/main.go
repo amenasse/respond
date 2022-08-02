@@ -65,6 +65,7 @@ func main() {
 	headers = make(map[string]string)
 
 	port := flag.Int("port", 8080, "port to listen on")
+	addr := flag.String("bind", "0.0.0.0", "address to bind to")
 	versionFlag := flag.Bool("version", false, "display version information and exit")
 	logFormat := flag.String("logformat", "", "format string for logging")
 	flag.Func("header", "header to include in response", func(s string) error {
@@ -104,7 +105,7 @@ func main() {
 		http.LogFormat = *logFormat
 	}
 	code := getStatusCode()
-	address := fmt.Sprintf(":%d", *port)
+	address := fmt.Sprintf("%s:%d", *addr, *port)
 	log.Printf("Starting Respond %v listening on %v", version, address)
 	http.Serve(address, code, body, headers)
 }

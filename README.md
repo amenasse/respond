@@ -33,10 +33,10 @@ Without any arguments a 200 status code is returned
 respond
 ```
 
-Respond will bind to port 8080 on all interfaces. A different port can be specified:
+Respond will bind to port 8080 on all interfaces. A different port and address can be specified:
 
 ```bash
-respond -port 8080
+respond -bind 127.0.0.1 -port 9090
 ```
 
 ### Response Body
@@ -83,8 +83,6 @@ respond -logformat \
 
 
 ## Limitations
-
-Binds to all interfaces.
 
 Support for the following may be added in the future:
 
