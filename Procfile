@@ -1,1 +1,1 @@
-respond: cmd/respond/respond
+respond: cmd/respond/respond -port 5000
