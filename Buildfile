@@ -1,1 +1,1 @@
-make: make build-respond
+make: ./build.sh
