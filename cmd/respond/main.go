@@ -65,7 +65,6 @@ func main() {
 	headers = make(map[string]string)
 
 	port := flag.Int("port", 8080, "port to listen on")
-	tls := flag.Bool("tls", false, "Use TLS")
 	cert := flag.String("cert", "", "path to TLS cert (required with tls option)")
 	key := flag.String("key", "", "path to private key for the cert (required with tls option)")
 	addr := flag.String("bind", "0.0.0.0", "address to bind to")
@@ -93,16 +92,19 @@ func main() {
 	}
 	flag.Parse()
 
-	if *tls == true {
+	tls := false
+
+	if *key != "" || *cert != "" {
 		if *key == "" || *cert == "" {
-			fmt.Fprintf(os.Stderr, "The options -key and -cert must be provided for tls.\n")
+			fmt.Fprintf(os.Stderr, "Both key and cert options must be specified for TLS.\n")
 			os.Exit(2)
 		}
-
+		tls = true
 	}
-	args := flag.Args()
 
+	args := flag.Args()
 	body := "{{.Description}}\n"
+
 	if len(args) > 1 {
 		body = args[1]
 	}
@@ -121,7 +123,7 @@ func main() {
 
 	scheme := "http"
 
-	if *tls == true {
+	if tls == true {
 		scheme = "https"
 		listener = http.ListenerTLS(address, *cert, *key)
 	} else {
