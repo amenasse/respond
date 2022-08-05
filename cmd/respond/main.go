@@ -117,14 +117,17 @@ func main() {
 	}
 	code := getStatusCode()
 	address := fmt.Sprintf("%s:%d", *addr, *port)
-	log.Printf("Starting Respond %v listening on %v", version, address)
 	var listener func() error
 
+	scheme := "http"
+
 	if *tls == true {
+		scheme = "https"
 		listener = http.ListenerTLS(address, *cert, *key)
 	} else {
 		listener = http.Listener(address)
 	}
 
+	log.Printf("Starting Respond %v listening on %s://%v", version, scheme, address)
 	http.Serve(listener, code, body, headers)
 }
