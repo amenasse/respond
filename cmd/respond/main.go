@@ -65,6 +65,9 @@ func main() {
 	headers = make(map[string]string)
 
 	port := flag.Int("port", 8080, "port to listen on")
+	tls := flag.Bool("tls", false, "Use TLS")
+	cert := flag.String("cert", "", "path to TLS cert (required with tls option)")
+	key := flag.String("key", "", "path to private key for the cert (required with tls option)")
 	addr := flag.String("bind", "0.0.0.0", "address to bind to")
 	versionFlag := flag.Bool("version", false, "display version information and exit")
 	logFormat := flag.String("logformat", "", "format string for logging")
@@ -89,6 +92,14 @@ func main() {
 		flag.PrintDefaults()
 	}
 	flag.Parse()
+
+	if *tls == true {
+		if *key == "" || *cert == "" {
+			fmt.Fprintf(os.Stderr, "The options -key and -cert must be provided for tls.\n")
+			os.Exit(2)
+		}
+
+	}
 	args := flag.Args()
 
 	body := "{{.Description}}\n"
@@ -107,5 +118,13 @@ func main() {
 	code := getStatusCode()
 	address := fmt.Sprintf("%s:%d", *addr, *port)
 	log.Printf("Starting Respond %v listening on %v", version, address)
-	http.Serve(address, code, body, headers)
+	var listener func() error
+
+	if *tls == true {
+		listener = http.ListenerTLS(address, *cert, *key)
+	} else {
+		listener = http.Listener(address)
+	}
+
+	http.Serve(listener, code, body, headers)
 }
