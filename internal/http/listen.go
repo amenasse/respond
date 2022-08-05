@@ -20,6 +20,5 @@ func Listener(address string) func() error {
 func Serve(listener func() error, code int, body string, headers map[string]string) {
 	path := "/"
 	http.HandleFunc(path, Handler(code, body, headers))
-	listener()
 	log.Fatal(listener())
 }
