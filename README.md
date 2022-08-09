@@ -40,7 +40,7 @@ respond -bind 127.0.0.1 -port 9090
 ```
 
 
-To listen for HTTPS connections use the `key` and `cert` options:
+To listen for HTTPS connections provide a private key and cert in PEM format using the `key` and `cert` options:
 
 ```bash
 respond -key ./certs/example.com/privkey.pem -cert ./certs/example.com/cert.pem
