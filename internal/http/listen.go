@@ -5,7 +5,7 @@ import (
 	"net/http"
 )
 
-func ListenerTLS(address string, certFile string, keyFile string) func() error {
+func ListenerTLS(address, certFile, keyFile string) func() error {
 	return func() error {
 		return http.ListenAndServeTLS(address, certFile, keyFile, nil)
 	}
