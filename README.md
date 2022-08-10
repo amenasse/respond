@@ -39,6 +39,13 @@ Respond will bind to port 8080 on all interfaces. A different port and address c
 respond -bind 127.0.0.1 -port 9090
 ```
 
+
+To listen for HTTPS connections provide a private key and cert in PEM format using the `key` and `cert` options:
+
+```bash
+respond -key ./certs/example.com/privkey.pem -cert ./certs/example.com/cert.pem
+```
+
 ### Response Body
 
 The response body can be customised
