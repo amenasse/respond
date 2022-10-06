@@ -45,14 +45,12 @@ jobs:
       # run the aws-cli/setup command from the orb
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::172428475609:role/CircleCIOpenIDTest'
-           # optional parameters
-          profile-name: "OIDC-PROFILE"
  
       - run:
           name: Log-into-AWS-ECR
           command: |
             # must use same profile specified in the step above
-            aws ecr get-login-password --profile "OIDC-PROFILE"
+            aws ecr get-login-password
           environment:
             AWS_DEFAULT_REGION: ap-southeast-2
 
