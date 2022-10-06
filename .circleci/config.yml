@@ -1,18 +1,23 @@
 # Use the latest 2.1 version of CircleCI pipeline process engine.
 # See: https://circleci.com/docs/2.0/configuration-reference
 version: 2.1
+orbs:
+  # import CircleCI's aws-cli orb
+  aws-cli: circleci/aws-cli@3.1
 
 # Define a job to be invoked later in a workflow.
 # See: https://circleci.com/docs/2.0/configuration-reference/#jobs
 jobs:
   build:
     working_directory: ~/repo
-    # Specify the execution environment. You can specify an image from Dockerhub or use one of our Convenience Images from CircleCI's Developer Hub.
-    # See: https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
+    # Specify the execution environment. You can specify an image from
+    # Dockerhub or use one of our Convenience Images from CircleCI's Developer
+    # Hub. See:
+    # https://circleci.com/docs/2.0/configuration-reference/#docker-machine-macos-windows-executor
     docker:
       - image: cimg/go:1.17.13
-    # Add steps to the job
-    # See: https://circleci.com/docs/2.0/configuration-reference/#steps
+      # Add steps to the job
+      # See: https://circleci.com/docs/2.0/configuration-reference/#steps
     steps:
       - checkout
       - restore_cache:
@@ -33,10 +38,29 @@ jobs:
       - store_test_results:
           path: /tmp/test-reports
 
+  aws-example:
+    docker:
+      - image: cimg/aws:2022.06
+    steps:
+      # run the aws-cli/setup command from the orb
+      - aws-cli/setup:
+          role-arn: 'arn:aws:iam::172428475609:role/CircleCIOpenIDTest'
+          aws-region: "ap-southeast-2"
+           # optional parameters
+          profile-name: "OIDC-PROFILE"
+          role-session-name: "example-session"
+          session-duration: 1800
+      - run:
+          name: Log-into-AWS-ECR
+          command: |
+            # must use same profile specified in the step above
+            aws ecr get-login-password --profile "OIDC-PROFILE"
+
+
 # Invoke jobs via workflows
 # See: https://circleci.com/docs/2.0/configuration-reference/#workflows
 workflows:
-  sample: # This is the name of the workflow, feel free to change it to better match your workflow.
-    # Inside the workflow, you define the jobs you want to run.
+  sample:
     jobs:
+      - aws-example
       - build
