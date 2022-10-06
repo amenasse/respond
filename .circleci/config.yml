@@ -45,16 +45,16 @@ jobs:
       # run the aws-cli/setup command from the orb
       - aws-cli/setup:
           role-arn: 'arn:aws:iam::172428475609:role/CircleCIOpenIDTest'
-          aws-region: "ap-southeast-2"
            # optional parameters
           profile-name: "OIDC-PROFILE"
-          role-session-name: "example-session"
-          session-duration: 1800
+ 
       - run:
           name: Log-into-AWS-ECR
           command: |
             # must use same profile specified in the step above
             aws ecr get-login-password --profile "OIDC-PROFILE"
+          environment:
+            AWS_DEFAULT_REGION: ap-southeast-2
 
 
 # Invoke jobs via workflows
@@ -62,5 +62,6 @@ jobs:
 workflows:
   sample:
     jobs:
-      - aws-example
+      - aws-example:
+          context: aws
       - build
