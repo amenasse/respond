@@ -9,13 +9,20 @@ A http server returning specific status codes is useful for infrastructure testi
 
 ## Installation
 
-    go install github.com/amenasse/respond/cmd/respond
+To run the container image:
 
+```bash
+# run respond listening on port 8080
+docker run -p 8080:8080 sysant/respond
+```
 
+Prebuilt releases are available from the [releases page](https://github.com/amenasse/respond/releases ).
 
-To run a Container image:
+Or fetch and build using go install:
 
-    docker|podman run sysant/respond
+```bash
+go install github.com/amenasse/respond/cmd/respond@latest
+```
 
 
 ## Usage
