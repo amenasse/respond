@@ -41,10 +41,9 @@ var (
 	builtBy = "unknown"
 )
 
-func getStatusCode() int {
+func getStatusCode(args []string) int {
 
 	code := 200
-	args := flag.Args()
 	if len(args) > 0 {
 		if s, err := strconv.Atoi(args[0]); err == nil {
 			code = s
@@ -117,7 +116,7 @@ func main() {
 	if *logFormat != "" {
 		http.LogFormat = *logFormat
 	}
-	code := getStatusCode()
+	code := getStatusCode(args)
 	address := fmt.Sprintf("%s:%d", *addr, *port)
 	var listener func() error
 
