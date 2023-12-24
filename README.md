@@ -77,7 +77,7 @@ respond 200 '{{range .RequestHeaders }}{{.Name}}: {{.Value}}|{{end}}'
 
 ### Response Headers
 
-Reponse headers can be set with the `header` option:
+Response headers can be set with the `header` option:
 
 
 ```bash
