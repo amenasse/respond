@@ -67,6 +67,12 @@ Request headers can be returned in the response
 respond 200 '🕵: {{ .RequestHeader "User-Agent" }}, 👻: {{.RequestHeader "Host"}}'
 ```
 
+The response body can be read from a file
+
+```bash
+respond 200 -file poem.txt
+```
+
 
 All header names and values can be returned with `.RequestHeaders`
 

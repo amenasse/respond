@@ -3,6 +3,7 @@ package main
 import (
 	"flag"
 	"fmt"
+	"io/ioutil"
 	"log"
 	"os"
 	"runtime"
@@ -67,6 +68,7 @@ func main() {
 	cert := flag.String("cert", "", "path to TLS cert (required with tls option)")
 	key := flag.String("key", "", "path to private key for the cert (required with tls option)")
 	addr := flag.String("bind", "0.0.0.0", "address to bind to")
+	filename := flag.String("file", "", "read response body from file")
 	versionFlag := flag.Bool("version", false, "display version information and exit")
 	logFormat := flag.String("logformat", "", "format string for logging")
 	flag.Func("header", "header to include in response", func(s string) error {
@@ -102,9 +104,16 @@ func main() {
 	}
 
 	args := flag.Args()
+
 	body := "{{.Description}}\n"
 
-	if len(args) > 1 {
+	if *filename != "" {
+        data, err := ioutil.ReadFile(*filename)
+        if err != nil {
+            log.Fatal("Cannot read ", *filename)
+        }
+        body = string(data)
+	} else if len(args) > 1 {
 		body = args[1]
 	}
 
