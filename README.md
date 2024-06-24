@@ -58,7 +58,7 @@ respond -key ./certs/example.com/privkey.pem -cert ./certs/example.com/cert.pem
 The response body can be customised
 
 ```bash
-respond 200 '{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.StatusCode}} {{.Description}}\n'
+respond 200 'Host:{{.Host}} {{.Method}} {{.Path}} {{.Proto}} {{.RemoteAddr}} {{.StatusCode}} {{.Description}}\n'
 ```
 
 Request headers can be returned in the response
