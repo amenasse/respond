@@ -16,6 +16,7 @@ type ResponseContext struct {
 	Method        string
 	Proto         string
 	Path          string
+	RemoteAddr    string
 }
 
 func (r ResponseContext) Description() string {
@@ -100,6 +101,7 @@ func Handler(statusCode int, responseText string, headers map[string]string) fun
 		context.Host = r.Host
 		context.Method = r.Method
 		context.Proto = r.Proto
+		context.RemoteAddr = r.RemoteAddr
 		context.Path = r.URL.String()
 
 		logContext := LogContext{ResponseContext: context}
